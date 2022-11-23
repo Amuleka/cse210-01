@@ -72,6 +72,7 @@ class Director:
             self._is_playing = False
         elif self._jumper.has_parachute() == False:
             self._jumper.parachute_gone()
+            self._is_playing = False
             
             
         # self._jumper.parachute_gone()
