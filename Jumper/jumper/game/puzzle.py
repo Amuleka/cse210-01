@@ -1,43 +1,36 @@
 import random
 
+from game.terminal_service import TerminalService
+
 class Puzzle:
 
     def __init__(self):
-        _words = ['car', 'truck', 'van', 'bike', 'scooter']
-        self._word = random.choice(_words)
-
-    def _create_word(self):
-        #picks the word for the game ['cart','tank','bowl','door','cake','part']
-        self._words = ['cart', 'cart', 'cart',]
-
-    def _check_guess(self, guess):
-        # adds letters to a list if correct
-        self._correct_letters = []
-        for x in self._word:
-            if guess == x:
-                self._correct_letters.append(x)
-
-        if guess in self._correct_letters:
-            return True
-        else:
-            return False
-
-    def _completed_word(self):
-        #checks to see if user has completed the word
-
-        self._correct_letters = []
-        _correct_word = []
-
-        #convert word into list
-        for x in self._word:
-            _correct_word.append(x)
+        self._terminal_service = TerminalService()
+        self._words = ['mexico', 'usa', 'brazil', 'argentina', 'france', 'italy', 'germany', 'sweden']
+        self._word_selected = random.choice(self._words)
+        self._word_guess = ['_'] * len(self._word_selected)
         
-        #sort lists so we can check
-        _checker = self._correct_letters.sort()
-        _correct_check = _correct_word.sort()
 
-        #checks the word
-        if _checker != _correct_check:
-            return False
-        elif _checker == _correct_check:
-            return self._word
+    def draw_word_guess(self):
+        for letter in self._word_guess:
+            self._terminal_service.write_text(letter)
+
+    def process_guess(self, guess_letter):
+        correct_guess = False
+        #Loop through _word_selected by index
+        for i in range(0,len(self._word_selected)):
+        #Check if guess_letter = _word_select[index]
+            if guess_letter == self._word_selected[i]:
+        #Set _word_guess[index] = guess_letter
+                self._word_guess[i] = guess_letter
+
+        return correct_guess
+
+    def can_keep_guessing(self):
+        return "_" in self._word_guess
+
+
+
+
+
+

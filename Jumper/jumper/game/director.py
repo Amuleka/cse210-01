@@ -23,7 +23,7 @@ class Director:
         """
         self._puzzle = Puzzle()
         self._is_playing = True
-        self.jumper = Jumper()
+        self._jumper = Jumper()
         self._terminal_service = TerminalService()
         
     def start_game(self):
@@ -38,13 +38,16 @@ class Director:
             self._do_outputs()
 
     def _get_inputs(self):
-        """Asks the user for a guess.
+        """Moves the seeker to a new location.
 
         Args:
             self (Director): An instance of Director.
         """
-        letter_guessed = self._terminal_service.read_letter("\nGuess a letter [a-z]: ")
-        self._puzzle._check_guess(letter_guessed)
+        print(self._puzzle._word_selected)
+        self._puzzle.draw_word_guess()
+        self._jumper.draw_jumper()
+        self._letter_guessed = self._terminal_service.read_guess("\nEnter a letter: [a-z] ").lower()
+        self._puzzle.process_guess(self._letter_guessed)
         
     def _do_updates(self):
         """Keeps watch on where the seeker is moving.
@@ -52,8 +55,11 @@ class Director:
         Args:
             self (Director): An instance of Director.
         """
-        if self._puzzle._check_guess is False:
-            self.jumper.set_parachute()
+        if self._letter_guessed in self._puzzle._word_selected:
+            self._jumper.draw_jumper()
+        else:
+            self._jumper.remove_parachute_piece()
+
         
     def _do_outputs(self):
         """Provides a hint for the seeker to use.
@@ -61,13 +67,14 @@ class Director:
         Args:
             self (Director): An instance of Director.
         """
-        if self._puzzle is True:
-            self._terminal_service.write_text('That letter is correct ')
-        else:
-            self._terminal_service.write_text('Sorry, that letter is not part of this word')
-        self._terminal_service.write_text(self.jumper.get_parachute())
-
-        if self._puzzle._completed_word():
-            self._terminal_service.write_text('You got it! ')
-        self._terminal_service.write_text(self._puzzle._completed_word())
-        self._is_playing = False
+        if self._puzzle.can_keep_guessing() == False:
+            print('Congrats, You won')
+            self._is_playing = False
+        elif self._jumper.has_parachute() == False:
+            self._jumper.parachute_gone()
+            
+            
+        # self._jumper.parachute_gone()
+        #     # self._is_playing = False
+            
+            
